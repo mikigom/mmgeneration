@@ -891,7 +891,7 @@ class ModulatedToRGB(nn.Module):
             style_mod_cfg=style_mod_cfg,
             style_bias=style_bias)
 
-        self.bias = nn.Parameter(torch.zeros(1, 3, 1, 1))
+        self.bias = nn.Parameter(torch.zeros(1, out_channels, 1, 1))
 
         # enforece the output to be fp32 (follow Tero's implementation)
         self.out_fp32 = out_fp32
