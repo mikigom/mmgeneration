@@ -155,7 +155,7 @@ class SwaganGenerator(StyleGANv2Generator):
             fp16_enabled=fp16_enabled)
 
         # generator backbone (8x8 --> higher resolutions)
-        self.log_size = int(np.log2(self.out_size))
+        self.log_size = int(np.log2(self.out_size)) - 1
 
         self.convs = nn.ModuleList()
         self.upsamples = nn.ModuleList()
@@ -369,7 +369,7 @@ class SwaganGenerator(StyleGANv2Generator):
 
         # make sure the output image is torch.float32 to avoid RunTime Error
         # in other modules
-        img = skip.to(torch.float32)
+        img = img.to(torch.float32)
 
         if return_latents or return_noise:
             output_dict = dict(
@@ -470,7 +470,7 @@ class SwaganDiscriminator(StyleGAN2Discriminator):
             1024: 16 * channel_multiplier,
         }
 
-        log_size = int(np.log2(in_size))
+        log_size = int(np.log2(in_size)) - 1
 
         in_channels = channels[in_size]
 
@@ -503,6 +503,7 @@ class SwaganDiscriminator(StyleGAN2Discriminator):
         from_rgbs.append(
             ModulatedFromRGB(
                 channels[4],
+                downsample=True,
                 fp16_enabled=_use_fp16,
                 convert_input_fp32=convert_input_fp32))
 

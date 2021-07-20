@@ -1,8 +1,8 @@
 from .styleganv2_modules import (Blur, ConstantInput, ConvDownLayer,
-                                 ModulatedStyleConv, ModulatedToRGB,
-                                 NoiseInjection)
+                                 DownsampleUpFIRDn, ModulatedStyleConv,
+                                 ModulatedToRGB, NoiseInjection)
 
 __all__ = [
     'Blur', 'ModulatedStyleConv', 'ModulatedToRGB', 'NoiseInjection',
-    'ConstantInput', 'ConvDownLayer'
+    'ConstantInput', 'ConvDownLayer', 'DownsampleUpFIRDn'
 ]

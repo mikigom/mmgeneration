@@ -3,7 +3,8 @@ import torch.nn as nn
 from mmcv.ops.upfirdn2d import upfirdn2d
 
 from mmgen.core.runners.fp16_utils import auto_fp16
-from mmgen.models.architectures.stylegan.modules import Blur, ConvDownLayer
+from mmgen.models.architectures.stylegan.modules import (ConvDownLayer,
+                                                         DownsampleUpFIRDn)
 from mmgen.models.architectures.stylegan.modules import \
     ModulatedToRGB as ModulatedToRGB_
 
@@ -181,11 +182,11 @@ class ModulatedFromRGB(nn.Module):
         self.fp16_enabled = fp16_enabled
         self.convert_input_fp32 = convert_input_fp32
 
-        self.downsample = downsample
+        self._downsample = downsample
 
-        if downsample:
+        if self._downsample:
             self.iwt = InverseHaarTransform()
-            self.downsample = Blur(blur_kernel)
+            self.downsample = DownsampleUpFIRDn(blur_kernel)
             self.dwt = HaarTransform()
 
         self.conv = ConvDownLayer(3 * 4, out_channel, 1)
@@ -195,7 +196,7 @@ class ModulatedFromRGB(nn.Module):
         if not self.fp16_enabled and self.convert_input_fp32:
             input = input.to(torch.float32)
 
-        if self.downsample:
+        if self._downsample:
             input = self.iwt(input)
             input = self.downsample(input)
             input = self.dwt(input)
